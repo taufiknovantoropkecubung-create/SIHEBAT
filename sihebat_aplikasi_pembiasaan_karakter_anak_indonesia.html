@@ -1,0 +1,1515 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIHEBAT - SMP Negeri 3 Satap Permata Kecubung</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        hebat: {
+                            blue: '#0284c7',
+                            navy: '#0f172a',
+                            emerald: '#10b981',
+                            amber: '#f59e0b',
+                            rose: '#f43f5e',
+                            purple: '#8b5cf6',
+                            indigo: '#4f46e5'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
+        .habit-card { transition: all 0.25s ease-in-out; }
+        .habit-card:hover { transform: translateY(-2px); }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        @keyframes bounce-short {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+        .animate-bounce-short { animation: bounce-short 1s ease-in-out infinite; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col justify-between relative">
+
+    <!-- LOGIN OVERLAY SCREEN -->
+    <div id="loginOverlay" class="fixed inset-0 z-50 bg-gradient-to-br from-blue-900 via-indigo-900 to-slate-900 flex items-center justify-center p-4 custom-scrollbar overflow-y-auto">
+        <div class="glass-card rounded-3xl max-w-md w-full p-6 sm:p-8 space-y-6 shadow-2xl my-auto border border-blue-200/20 text-slate-800">
+            <!-- School Logo & Branding -->
+            <div class="text-center space-y-3">
+                <div class="relative w-24 h-24 mx-auto bg-white rounded-2xl p-2 shadow-lg border-2 border-blue-400 flex items-center justify-center">
+                    <img src="logo.JPG" alt="Logo SMP Negeri 3 Satap Permata Kecubung" class="max-h-full max-w-full object-contain" onerror="this.onerror=null; this.src='https://placehold.co/120x120/0284c7/ffffff?text=SMPN+3';">
+                </div>
+                <div>
+                    <span class="bg-blue-100 text-blue-800 text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">SMP NEGERI 3 SATAP PERMATA KECUBUNG</span>
+                    <h2 class="text-2xl font-black text-slate-900 tracking-tight mt-1">SIHEBAT</h2>
+                    <p class="text-xs text-slate-500 font-medium">Jurnal Pembiasaan 7 Karakter Anak Indonesia</p>
+                </div>
+            </div>
+
+            <!-- Login Form -->
+            <form onsubmit="handleLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Nama Lengkap Siswa</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-user absolute left-3.5 top-3.5 text-slate-400 text-sm"></i>
+                        <input type="text" id="loginName" required placeholder="Masukkan nama siswa..." class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-blue-500 focus:bg-white focus:outline-none transition">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">NISN / NIS</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-id-card absolute left-3.5 top-3.5 text-slate-400 text-sm"></i>
+                            <input type="text" id="loginNisn" placeholder="Nomor Induk" class="w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-blue-500 focus:bg-white focus:outline-none transition">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Kelas</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-graduation-cap absolute left-3.5 top-3.5 text-slate-400 text-sm"></i>
+                            <select id="loginClass" class="w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-blue-500 focus:bg-white focus:outline-none transition">
+                                <option value="VII A">Kelas VII A</option>
+                                <option value="VII B">Kelas VII B</option>
+                                <option value="VIII A">Kelas VIII A</option>
+                                <option value="VIII B">Kelas VIII B</option>
+                                <option value="IX A">Kelas IX A</option>
+                                <option value="IX B">Kelas IX B</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full py-3 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-700 hover:to-indigo-800 text-white font-extrabold rounded-xl text-sm shadow-lg shadow-blue-500/30 transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-right-to-bracket"></i> Masuk Jurnal Pembiasaan
+                </button>
+            </form>
+
+            <div class="text-center pt-2 border-t border-slate-200/60 text-[11px] text-slate-500">
+                <p>SMP NEGERI 3 SATAP PERMATA KECUBUNG</p>
+                <p class="font-medium text-slate-400">Pendidikan Karakter Menyongsong Indonesia Emas</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header App Bar -->
+    <header class="bg-gradient-to-r from-blue-900 via-blue-800 to-indigo-900 text-white shadow-xl sticky top-0 z-40 border-b border-blue-700/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col md:flex-row items-center justify-between gap-4">
+            <!-- Brand Logo & School Info -->
+            <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('tracker')">
+                <div class="bg-white p-1.5 rounded-2xl flex items-center justify-center shadow-lg w-12 h-12 shrink-0 border border-blue-200">
+                    <img src="logo.JPG" alt="Logo Sekolah" class="max-h-full max-w-full object-contain" onerror="this.onerror=null; this.src='https://placehold.co/120x120/0284c7/ffffff?text=SMPN+3';">
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h1 class="text-2xl font-black tracking-wider uppercase drop-shadow text-white">SIHEBAT</h1>
+                        <span class="bg-amber-400 text-slate-900 text-[10px] font-extrabold px-2 py-0.5 rounded-full shadow-xs">SMPN 3 Satap</span>
+                    </div>
+                    <p class="text-xs text-blue-100 font-medium">SMP NEGERI 3 SATAP PERMATA KECUBUNG</p>
+                </div>
+            </div>
+
+            <!-- Profile Summary & Stats Pill -->
+            <div class="flex items-center gap-3 bg-white/10 backdrop-blur-md px-4 py-2 rounded-2xl border border-white/15 w-full md:w-auto justify-between md:justify-end">
+                <div class="flex items-center gap-3">
+                    <div class="relative cursor-pointer" onclick="openProfileModal()">
+                        <div class="w-10 h-10 rounded-full bg-blue-600 border-2 border-white flex items-center justify-center text-white font-bold text-sm shadow">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                        <span class="absolute -bottom-1 -right-1 bg-emerald-500 text-white text-[9px] font-bold px-1 rounded-full border border-white">Lvl <span id="userLevel">1</span></span>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span id="userName" class="font-bold text-sm truncate max-w-[120px] sm:max-w-[160px]">Siswa Indonesia</span>
+                            <button onclick="openProfileModal()" class="text-xs text-blue-200 hover:text-white" title="Edit Profil"><i class="fa-solid fa-pen-to-square"></i></button>
+                        </div>
+                        <div class="flex items-center gap-2 text-xs text-blue-100">
+                            <span id="userClassBadge" class="bg-blue-500/40 text-blue-100 text-[10px] px-1.5 py-0.2 rounded font-semibold">VII A</span>
+                            <span>•</span>
+                            <span><i class="fa-solid fa-fire text-amber-300 mr-0.5"></i><span id="streakCount">0</span> Hr</span>
+                            <span>•</span>
+                            <span><i class="fa-solid fa-star text-amber-300 mr-0.5"></i><span id="totalXP">0</span> XP</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-1.5">
+                    <!-- AppsScript Sync Indicator -->
+                    <button onclick="switchTab('appsScript')" class="text-xs bg-white/15 hover:bg-white/25 text-white px-2.5 py-1.5 rounded-xl transition flex items-center gap-1.5" title="Status AppsScript">
+                        <span id="syncDot" class="w-2 h-2 rounded-full bg-slate-300"></span>
+                        <span id="syncText" class="hidden sm:inline font-semibold">Lokal</span>
+                    </button>
+
+                    <!-- Logout Button -->
+                    <button onclick="handleLogout()" class="text-xs bg-red-500/80 hover:bg-red-600 text-white px-2.5 py-1.5 rounded-xl transition flex items-center gap-1" title="Keluar / Switch Siswa">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        <span class="hidden sm:inline font-semibold">Keluar</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="bg-white border-b border-slate-200 shadow-xs sticky top-[69px] z-30">
+        <div class="max-w-7xl mx-auto px-4 flex overflow-x-auto custom-scrollbar gap-2 py-2">
+            <button onclick="switchTab('tracker')" id="nav-tracker" class="nav-btn active flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap transition-all bg-red-50 text-red-600">
+                <i class="fa-solid fa-square-check text-base"></i> Jurnal Harian
+            </button>
+            <button onclick="switchTab('stats')" id="nav-stats" class="nav-btn flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-all text-slate-600 hover:bg-slate-100">
+                <i class="fa-solid fa-chart-pie text-base"></i> Laporan & Grafik
+            </button>
+            <button onclick="switchTab('guide')" id="nav-guide" class="nav-btn flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-all text-slate-600 hover:bg-slate-100">
+                <i class="fa-solid fa-book-open text-base"></i> Panduan 7 Kebiasaan
+            </button>
+            <button onclick="switchTab('rewards')" id="nav-rewards" class="nav-btn flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-all text-slate-600 hover:bg-slate-100">
+                <i class="fa-solid fa-trophy text-base"></i> Lencana & Sertifikat
+            </button>
+            <button onclick="switchTab('appsScript')" id="nav-appsScript" class="nav-btn flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-all text-slate-600 hover:bg-slate-100">
+                <i class="fa-solid fa-code text-base text-blue-600"></i> Integrasi AppsScript
+            </button>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full">
+
+        <!-- ================= SECTION 1: HABIT TRACKER ================= -->
+        <section id="section-tracker" class="space-y-6">
+            <!-- Top Action & Date Bar -->
+            <div class="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200/80 flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-3 w-full md:w-auto">
+                    <div class="p-3 bg-red-100 text-red-600 rounded-xl">
+                        <i class="fa-solid fa-calendar-day text-xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-500 font-semibold uppercase tracking-wider">Tanggal Pembiasaan</p>
+                        <input type="date" id="trackerDate" class="font-bold text-slate-800 text-base sm:text-lg focus:outline-none bg-transparent cursor-pointer" onchange="loadDayData()">
+                    </div>
+                </div>
+
+                <!-- Daily Progress Overview Bar -->
+                <div class="w-full md:w-1/2 flex flex-col gap-1.5">
+                    <div class="flex justify-between items-center text-xs font-bold">
+                        <span class="text-slate-600"><i class="fa-solid fa-circle-notch text-rose-500 animate-spin mr-1"></i> Kemajuan Hari Ini</span>
+                        <span id="dailyProgressPercent" class="text-red-600">0% (0/7)</span>
+                    </div>
+                    <div class="w-full h-3.5 bg-slate-100 rounded-full overflow-hidden p-0.5 border border-slate-200">
+                        <div id="dailyProgressBar" class="h-full bg-gradient-to-r from-red-500 via-amber-500 to-emerald-500 rounded-full transition-all duration-500 w-0"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Anti-Cheat / Honest Shield Notice -->
+            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 p-3.5 rounded-2xl flex items-center justify-between gap-3 text-xs text-blue-900 shadow-2xs">
+                <div class="flex items-center gap-2.5">
+                    <div class="p-2 bg-blue-600 text-white rounded-xl font-bold">
+                        <i class="fa-solid fa-shield-halved text-sm"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-blue-950">Fitur Kejujuran & Validasi Otentik:</h4>
+                        <p class="text-slate-600">Foto kegiatan secara otomatis dicap watermark nama siswa, tanggal & jam pengerjaan. <i>(Khusus Bangun Pagi & Tidur Cepat tidak memerlukan unggah foto)</i>.</p>
+                    </div>
+                </div>
+                <button onclick="triggerMotivationalConfetti()" class="hidden sm:flex px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow transition items-center gap-1 shrink-0">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Semangat!
+                </button>
+            </div>
+
+            <!-- Dynamic Habit Grid Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="habitsGrid">
+                <!-- Habit items with Jam & Foto input will be dynamically populated here via JS -->
+            </div>
+
+            <!-- Daily Reflection & Validation Box -->
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 space-y-4">
+                <h3 class="font-bold text-slate-800 flex items-center gap-2">
+                    <i class="fa-solid fa-pen-fancy text-rose-500"></i> Catatan Refleksi & Kebaikan Hari Ini
+                </h3>
+                <textarea id="dailyNotes" rows="2" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-700 focus:ring-2 focus:ring-rose-400 focus:outline-none" placeholder="Tuliskan kebaikan khusus atau hal positif yang kamu lakukan hari ini... (misal: membantu ibu, membaca buku cerita, dll)"></textarea>
+
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2 border-t border-slate-100">
+                    <label class="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-700 select-none">
+                        <input type="checkbox" id="parentApproval" class="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500">
+                        <span><i class="fa-solid fa-user-check text-emerald-600 mr-1"></i> Disetujui / Didampingi Orang Tua / Guru</span>
+                    </label>
+
+                    <div class="flex items-center gap-2 w-full sm:w-auto">
+                        <button onclick="saveCurrentDayData()" class="w-full sm:w-auto px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-sm shadow transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-floppy-disk"></i> Simpan Pembiasaan
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECTION 2: STATS & GRAPH ================= -->
+        <section id="section-stats" class="hidden space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
+                    <div class="p-4 bg-emerald-100 text-emerald-600 rounded-2xl text-2xl">
+                        <i class="fa-solid fa-square-check"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-500 font-semibold">Total Kebiasaan Terpenuhi</p>
+                        <h3 class="text-2xl font-black text-slate-800" id="statTotalCompleted">0</h3>
+                        <p class="text-[11px] text-emerald-600 font-medium">Dari seluruh catatan aktif</p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
+                    <div class="p-4 bg-amber-100 text-amber-600 rounded-2xl text-2xl">
+                        <i class="fa-solid fa-fire"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-500 font-semibold">Beruntun Terpanjang</p>
+                        <h3 class="text-2xl font-black text-slate-800"><span id="statBestStreak">0</span> Hari</h3>
+                        <p class="text-[11px] text-amber-600 font-medium">Pertahankan konsistensi!</p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
+                    <div class="p-4 bg-indigo-100 text-indigo-600 rounded-2xl text-2xl">
+                        <i class="fa-solid fa-award"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-500 font-semibold">Tingkat Kelulusan</p>
+                        <h3 class="text-2xl font-black text-slate-800" id="statAvgRate">0%</h3>
+                        <p class="text-[11px] text-indigo-600 font-medium">Rata-rata pemenuhan 7 kebiasaan</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Weekly Trend Chart -->
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                    <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                        <i class="fa-solid fa-chart-line text-blue-600"></i> Tren Kebiasaan 7 Hari Terakhir
+                    </h3>
+                    <div class="h-64 relative">
+                        <canvas id="trendChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Radar Breakdown Chart -->
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                    <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                        <i class="fa-solid fa-chart-radar text-purple-600"></i> Keseimbangan 7 Karakter
+                    </h3>
+                    <div class="h-64 relative">
+                        <canvas id="radarChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECTION 3: GUIDE / EDUHUB ================= -->
+        <section id="section-guide" class="hidden space-y-6">
+            <div class="bg-gradient-to-r from-red-600 to-rose-700 text-white p-6 rounded-2xl shadow-md">
+                <h2 class="text-2xl font-extrabold mb-2">Panduan 7 Kebiasaan Anak Indonesia Hebat</h2>
+                <p class="text-sm text-rose-100 max-w-3xl leading-relaxed">
+                    Gerakan pembentukan karakter dari Kementerian Pendidikan dasar dan Menengah (Kemendikdasmen) untuk menyiapkan generasi unggul, sehat, cerdas, dan berakhlak mulia menyongsong Indonesia Emas 2045.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="guideCardsContainer">
+                <!-- Populated via JS -->
+            </div>
+        </section>
+
+        <!-- ================= SECTION 4: REWARDS & CERTIFICATE ================= -->
+        <section id="section-rewards" class="hidden space-y-6">
+            <!-- Unlocked Badges -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-800"><i class="fa-solid fa-medal text-amber-500 mr-2"></i> Lencana Karakter Kamu</h3>
+                        <p class="text-xs text-slate-500">Kumpulkan lencana dengan terus konsisten menjalankan 7 kebiasaan.</p>
+                    </div>
+                    <span class="text-xs bg-amber-100 text-amber-800 font-bold px-3 py-1 rounded-full" id="unlockedBadgesCount">0 / 6 Terbuka</span>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4" id="badgesContainer">
+                    <!-- Badges rendered by JS -->
+                </div>
+            </div>
+
+            <!-- Certificate Generator Card -->
+            <div class="bg-gradient-to-br from-slate-900 to-blue-950 text-white p-6 rounded-2xl shadow-lg border border-slate-700 flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="space-y-2 max-w-xl">
+                    <span class="bg-amber-400 text-slate-900 text-[10px] font-black uppercase px-2.5 py-1 rounded-full">Penghargaan Resmi Sekolah</span>
+                    <h3 class="text-2xl font-black text-amber-300">Cetak Piagam Anak Indonesia Hebat</h3>
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        Telah mengumpulkan XP dan menjaga konsistensi kebiasaan baik? Unduh atau cetak Piagam Penghargaan kamu secara resmi dari SMP Negeri 3 Satap Permata Kecubung!
+                    </p>
+                </div>
+                <button onclick="generateCertificate()" class="px-6 py-3 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-slate-950 font-extrabold rounded-xl text-sm shadow-md transition flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-file-certificate text-lg"></i> Buat Sertifikat Saya
+                </button>
+            </div>
+        </section>
+
+        <!-- ================= SECTION 5: GOOGLE APPS SCRIPT SETUP ================= -->
+        <section id="section-appsScript" class="hidden space-y-6">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-5">
+                <div class="flex items-center gap-3">
+                    <div class="p-3 bg-blue-100 text-blue-600 rounded-2xl text-2xl">
+                        <i class="fa-solid fa-network-wired"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-800">Pengaturan Integrasi Google Apps Script (GAS)</h2>
+                        <p class="text-xs text-slate-500">Hubungkan aplikasi ini dengan Google Spreadsheet untuk menyimpan seluruh data pembiasaan siswa (termasuk jam & foto bukti) secara otomatis di cloud!</p>
+                    </div>
+                </div>
+
+                <!-- API Connection Box -->
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
+                    <label class="block text-xs font-bold text-slate-700 uppercase">URL Web App Google Apps Script Kamu</label>
+                    <div class="flex gap-2">
+                        <input type="url" id="gasScriptUrl" class="flex-1 p-2.5 bg-white border border-slate-300 rounded-xl text-xs font-mono focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="https://script.google.com/macros/s/AKfycbx.../exec">
+                        <button onclick="saveGasUrl()" class="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs shadow transition">
+                            <i class="fa-solid fa-link mr-1"></i> Hubungkan
+                        </button>
+                    </div>
+                    <p class="text-[11px] text-slate-500">
+                        <i class="fa-solid fa-circle-info text-blue-500 mr-1"></i> Kosongkan URL jika hanya ingin menggunakan penyimpanan lokal di browser (Offline mode).
+                    </p>
+                </div>
+
+                <!-- Instructions Accordion / Steps -->
+                <div class="space-y-4 pt-3 border-t border-slate-100">
+                    <h3 class="font-bold text-slate-800 text-sm">Cara Pemasangan di Google Sheets & Google Apps Script (3 Langkah):</h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+                            <div class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold">1</div>
+                            <h4 class="font-bold text-slate-800">Buat Google Sheet Baru</h4>
+                            <p class="text-slate-600">Buka <a href="https://sheets.new" target="_blank" class="text-blue-600 underline font-semibold">sheets.new</a>. Beri nama spreadsheet "Data SIHEBAT". Lalu buka menu <b>Ekstensi &gt; Apps Script</b>.</p>
+                        </div>
+
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+                            <div class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold">2</div>
+                            <h4 class="font-bold text-slate-800">Salin Kode AppsScript</h4>
+                            <p class="text-slate-600">Salin kode backend <code>Code.gs</code> di bawah ini dan tempel di editor Google Apps Script kamu, lalu tekan simpan (Ctrl+S).</p>
+                        </div>
+
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+                            <div class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold">3</div>
+                            <h4 class="font-bold text-slate-800">Deploy sebagai Web App</h4>
+                            <p class="text-slate-600">Klik <b>Deploy &gt; New deployment</b>. Pilih <i>Web App</i>, set "Who has access" menjadi <b>Anyone</b>. Klik Deploy dan tempelkan URL hasilnya di atas!</p>
+                        </div>
+                    </div>
+
+                    <!-- Code Snippet Box -->
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-bold text-slate-700 font-mono"><i class="fa-solid fa-file-code text-amber-500 mr-1"></i> Code.gs (Kode Server Backend)</span>
+                            <button onclick="copyGasCode()" class="text-xs bg-slate-200 hover:bg-slate-300 px-3 py-1 rounded-lg text-slate-700 font-bold transition">
+                                <i class="fa-regular fa-copy mr-1"></i> Salin Kode GAS
+                            </button>
+                        </div>
+                        <pre class="bg-slate-900 text-emerald-400 p-4 rounded-xl text-[11px] font-mono overflow-x-auto max-h-80 custom-scrollbar" id="gasCodeDisplay"></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- PROFILE MODAL -->
+    <div id="profileModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 space-y-4 shadow-xl border border-slate-100">
+            <div class="flex justify-between items-center border-b pb-3 border-slate-100">
+                <h3 class="font-bold text-slate-800 text-lg">Edit Profil Siswa</h3>
+                <button onclick="closeProfileModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+
+            <div class="space-y-3 text-xs">
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Nama Lengkap Siswa</label>
+                    <input type="text" id="inputStudentName" class="w-full p-2.5 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-rose-500 focus:outline-none">
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Kelas</label>
+                        <input type="text" id="inputStudentClass" placeholder="Contoh: 7 A / 8 B" class="w-full p-2.5 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-rose-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Nama Sekolah</label>
+                        <input type="text" id="inputSchoolName" placeholder="Contoh: SMPN 3 Satap Permata Kecubung" class="w-full p-2.5 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-rose-500 focus:outline-none">
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex gap-2 pt-2">
+                <button onclick="closeProfileModal()" class="flex-1 py-2.5 bg-slate-100 text-slate-700 font-bold rounded-xl text-xs">Batal</button>
+                <button onclick="saveProfileData()" class="flex-1 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl text-xs shadow">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CERTIFICATE PRINT MODAL -->
+    <div id="certModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden overflow-y-auto">
+        <div class="bg-white rounded-2xl max-w-3xl w-full p-6 space-y-4 shadow-2xl my-8">
+            <div class="flex justify-between items-center border-b pb-2">
+                <h3 class="font-bold text-slate-800">Pratinjau Piagam Penghargaan</h3>
+                <button onclick="closeCertModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+
+            <!-- Printable Certificate Container -->
+            <div id="certificateContainer" class="bg-amber-50/50 p-8 rounded-xl border-8 border-double border-amber-600 text-center space-y-4 font-serif relative overflow-hidden shadow-inner">
+                <div class="absolute -top-12 -right-12 w-32 h-32 bg-amber-200/50 rounded-full blur-xl"></div>
+                <div class="absolute -bottom-12 -left-12 w-32 h-32 bg-blue-200/50 rounded-full blur-xl"></div>
+
+                <!-- Official School Header on Certificate -->
+                <div class="flex items-center justify-center gap-4 mb-2 border-b border-amber-300 pb-4">
+                    <img src="logo.JPG" alt="Logo SMP Negeri 3 Satap" class="w-16 h-16 object-contain" onerror="this.onerror=null; this.src='https://placehold.co/120x120/0284c7/ffffff?text=SMPN+3';">
+                    <div class="text-left font-sans">
+                        <h4 class="text-xs font-bold text-slate-700 uppercase tracking-widest">Pemerintah Kabupaten Permata Kecubung</h4>
+                        <h3 class="text-base font-black text-blue-900 uppercase">SMP NEGERI 3 SATAP PERMATA KECUBUNG</h3>
+                        <p class="text-[10px] text-slate-500">Program Pembiasaan Karakter - SIHEBAT</p>
+                    </div>
+                </div>
+
+                <h2 class="text-xs uppercase tracking-widest text-amber-800 font-bold font-sans mt-2">PIAGAM PENGHARGAAN KARAKTER</h2>
+                <h1 class="text-3xl font-extrabold text-slate-900 tracking-wide font-sans">ANAK INDONESIA HEBAT</h1>
+                
+                <p class="text-xs text-slate-600 font-sans italic my-2">Diberikan sebagai bentuk apresiasi dan kebanggaan sekolah kepada:</p>
+                
+                <div class="py-2 border-b-2 border-amber-500 inline-block px-8">
+                    <h2 class="text-2xl font-bold text-blue-900 font-sans" id="certStudentName">Nama Siswa</h2>
+                    <p class="text-xs font-semibold text-slate-600 font-sans mt-0.5" id="certStudentClassNisn">Kelas / NISN</p>
+                </div>
+                
+                <p class="text-xs text-slate-700 font-sans max-w-lg mx-auto leading-relaxed">
+                    Telah konsisten dan berdedikasi tinggi menginternalisasi <span class="font-bold text-slate-900">7 Kebiasaan Anak Indonesia Hebat</span> (Bangun Pagi, Beribadah, Berolahraga, Makan Sehat & Bergizi, Gemar Belajar, Bermasyarakat, dan Tidur Cepat).
+                </p>
+
+                <div class="grid grid-cols-3 gap-2 py-4 font-sans text-[11px] border-t border-b border-amber-200/80 my-4">
+                    <div>
+                        <span class="text-slate-400 block">Total XP</span>
+                        <strong class="text-slate-800 text-sm" id="certXP">0 XP</strong>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 block">Capaian Hari Beruntun</span>
+                        <strong class="text-slate-800 text-sm" id="certStreak">0 Hari</strong>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 block">Predikat Karakter</span>
+                        <strong class="text-emerald-700 text-sm" id="certPredicate">Sangat Baik</strong>
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-end pt-4 font-sans text-[11px]">
+                    <div class="text-left">
+                        <p class="text-slate-500">Dikeluarkan pada:</p>
+                        <p class="font-bold text-slate-800" id="certDate">-</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-slate-500">Mengetahui,</p>
+                        <p class="font-bold text-slate-800">Kepala SMPN 3 Satap Permata Kecubung</p>
+                        <div class="h-12"></div>
+                        <p class="font-bold text-slate-900 underline">( ........................................ )</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex gap-2 pt-2">
+                <button onclick="closeCertModal()" class="flex-1 py-2.5 bg-slate-100 text-slate-700 font-bold rounded-xl text-xs">Tutup</button>
+                <button onclick="printCertificate()" class="flex-1 py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-xs shadow flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-print"></i> Cetak / Simpan PDF
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 mt-12 py-4 text-center text-xs text-slate-500">
+        <p>SIHEBAT © 2026 • Gerakan 7 Kebiasaan Anak Indonesia Hebat • SMP Negeri 3 Satap Permata Kecubung</p>
+    </footer>
+
+    <script>
+        /* -------------------------------------------------------------
+         * 1. CONSTANTS & DEFINITIONS
+         * ------------------------------------------------------------- */
+        const HABITS_DEFINITION = [
+            {
+                id: 'bangunPagi',
+                title: 'Bangun Pagi',
+                subtitle: 'Bangun pagi tepat waktu dengan ceria & mandiri',
+                desc: 'Bangun pagi melatih kedisiplinan, kerapian, dan menyiapkan energi positif untuk memulai hari dengan optimis.',
+                icon: 'fa-sun',
+                color: 'amber',
+                xp: 15,
+                requirePhoto: false, // EXCLUDED FROM PHOTO
+                tips: ['Pasang alarm atau minta diingatkan', 'Langsung rapikan tempat tidur setelah bangun', 'Minum segelas air putih hangat']
+            },
+            {
+                id: 'beribadah',
+                title: 'Beribadah',
+                subtitle: 'Melaksanakan ibadah sesuai agama & kepercayaan',
+                desc: 'Beribadah membentuk fondasi spiritual, rasa syukur, serta keimanan dan ketakwaan kepada Tuhan Yang Maha Esa.',
+                icon: 'fa-hands-praying',
+                color: 'emerald',
+                xp: 20,
+                requirePhoto: true, // REQUIRES PHOTO
+                tips: ['Lakukan ibadah tepat waktu', 'Berdoa sebelum dan sesudah beraktivitas', 'Sempatkan membaca kitab suci']
+            },
+            {
+                id: 'berolahraga',
+                title: 'Berolahraga',
+                subtitle: 'Beraktivitas fisik / olahraga setidaknya 15-30 menit',
+                desc: 'Olahraga teratur menjaga kebugaran jasmani, kesehatan jantung, serta meningkatkan fokus dan daya ingat.',
+                icon: 'fa-person-running',
+                color: 'blue',
+                xp: 15,
+                requirePhoto: true, // REQUIRES PHOTO
+                tips: ['Lakukan senam kesegaran jasmani atau jalan pagi', 'Lakukan peregangan sederhana', 'Ajak teman atau keluarga berolahraga']
+            },
+            {
+                id: 'makanSehat',
+                title: 'Makan Sehat & Bergizi',
+                subtitle: 'Makan makanan bergizi seimbang & minum air secukupnya',
+                desc: 'Nutrisi seimbang menunjang tumbuh kembang fisik yang optimal dan stamina harian untuk belajar.',
+                icon: 'fa-utensils',
+                color: 'rose',
+                xp: 15,
+                requirePhoto: true, // REQUIRES PHOTO
+                tips: ['Kurangi jajanan manis atau makanan cepat saji', 'Perbanyak makan sayur dan buah', 'Minum minimal 8 gelas air bersih sehari']
+            },
+            {
+                id: 'gemarBelajar',
+                title: 'Gemar Belajar',
+                subtitle: 'Membaca buku, mengulang pelajaran, atau berlatih keterampilan',
+                desc: 'Belajar secara rutin mengasah kecerdasan, rasa ingin tahu, serta daya kritis untuk menghadapi masa depan.',
+                icon: 'fa-book-open-reader',
+                color: 'indigo',
+                xp: 20,
+                requirePhoto: true, // REQUIRES PHOTO
+                tips: ['Sisihkan waktu 30-60 menit untuk membaca atau mengerjakan PR', 'Matikan gadget saat fokus belajar', 'Catat poin penting pelajaran']
+            },
+            {
+                id: 'bermasyarakat',
+                title: 'Bermasyarakat',
+                subtitle: 'Membantu sesama, bergotong-royong, & bersikap santun',
+                desc: 'Bersosialisasi dan peduli lingkungan mengasah empati, jiwa kepemimpinan, serta nilai-nilai Pancasila.',
+                icon: 'fa-people-group',
+                color: 'purple',
+                xp: 15,
+                requirePhoto: true, // REQUIRES PHOTO
+                tips: ['Sapa guru, teman, dan tetangga dengan ramah', 'Bantu pekerjaan rumah orang tua', 'Jaga kebersihan lingkungan sekitar']
+            },
+            {
+                id: 'tidurCepat',
+                title: 'Tidur Cepat',
+                subtitle: 'Tidur tepat waktu di malam hari agar cukup istirahat',
+                desc: 'Istirahat yang cukup (8-9 jam) meregenerasi sel tubuh, menjaga imunitas, dan membuat pikiran segar esok hari.',
+                icon: 'fa-moon',
+                color: 'teal',
+                xp: 15,
+                requirePhoto: false, // EXCLUDED FROM PHOTO
+                tips: ['Tidur sebelum jam 21.30 malam', 'Hindari melihat layar HP/TV sebelum tidur', 'Pastikan kamar tidur bersih dan nyaman']
+            }
+        ];
+
+        const BADGES_DEFINITION = [
+            { id: 'pemula', title: 'Bintang Pemula', desc: 'Selesaikan pembiasaan pertama kamu', icon: 'fa-star', reqStreak: 1, reqXP: 15 },
+            { id: 'konsisten', title: 'Anak Disiplin', desc: 'Jaga kebiasaan selama 3 hari berturut-turut', icon: 'fa-calendar-check', reqStreak: 3, reqXP: 100 },
+            { id: 'hebat', title: 'Pejuang Karakter', desc: 'Gapai streak 7 hari & kumpulkan 300 XP', icon: 'fa-award', reqStreak: 7, reqXP: 300 },
+            { id: 'teladan', title: 'Siswa Teladan', desc: 'Pertahankan streak 14 hari & 700 XP', icon: 'fa-medal', reqStreak: 14, reqXP: 700 },
+            { id: 'bintang', title: 'Bintang Sekolah', desc: 'Pertahankan streak 21 hari & 1200 XP', icon: 'fa-crown', reqStreak: 21, reqXP: 1200 },
+            { id: 'pahlawan', title: 'Generasi Emas 2045', desc: 'Capai streak 30 hari & 2000 XP', icon: 'fa-trophy', reqStreak: 30, reqXP: 2000 }
+        ];
+
+        /* -------------------------------------------------------------
+         * 2. APPLICATION STATE
+         * ------------------------------------------------------------- */
+        let state = {
+            isLoggedIn: false,
+            profile: {
+                name: '',
+                nisn: '',
+                class: 'VII A',
+                school: 'SMP Negeri 3 Satap Permata Kecubung'
+            },
+            gasUrl: '',
+            history: {}, // Key: YYYY-MM-DD -> { habits: {}, times: {}, photos: {}, notes: string, parentApproved: boolean }
+            currentDate: new Date().toISOString().split('T')[0]
+        };
+
+        let trendChartInstance = null;
+        let radarChartInstance = null;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadStateFromLocalStorage();
+            checkLoginStatus();
+            initDatePicker();
+            renderHabitsGrid();
+            renderGuideCards();
+            loadDayData();
+            updateGasCodeDisplay();
+            checkAppSyncStatus();
+        });
+
+        /* -------------------------------------------------------------
+         * 3. LOGIN & LOCAL STORAGE PERSISTENCE
+         * ------------------------------------------------------------- */
+        function loadStateFromLocalStorage() {
+            const saved = localStorage.getItem('sihebat_app_state');
+            if (saved) {
+                try {
+                    state = JSON.parse(saved);
+                } catch (e) {
+                    console.error('Error parsing saved state:', e);
+                }
+            }
+            if (!state.history) state.history = {};
+            if (!state.currentDate) state.currentDate = new Date().toISOString().split('T')[0];
+
+            updateProfileUI();
+            document.getElementById('gasScriptUrl').value = state.gasUrl || '';
+        }
+
+        function checkLoginStatus() {
+            const loginOverlay = document.getElementById('loginOverlay');
+            if (state.isLoggedIn && state.profile.name) {
+                loginOverlay.classList.add('hidden');
+            } else {
+                loginOverlay.classList.remove('hidden');
+            }
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const nameInput = document.getElementById('loginName').value.trim();
+            const nisnInput = document.getElementById('loginNisn').value.trim();
+            const classInput = document.getElementById('loginClass').value;
+
+            if (!nameInput) return;
+
+            state.profile.name = nameInput;
+            state.profile.nisn = nisnInput;
+            state.profile.class = classInput;
+            state.profile.school = 'SMP Negeri 3 Satap Permata Kecubung';
+            state.isLoggedIn = true;
+
+            saveStateToLocalStorage();
+            updateProfileUI();
+            checkLoginStatus();
+            loadDayData();
+            showNotification(`Selamat datang, ${state.profile.name}!`);
+        }
+
+        function handleLogout() {
+            if (confirm('Apakah kamu yakin ingin keluar dari akun siswa ini?')) {
+                state.isLoggedIn = false;
+                saveStateToLocalStorage();
+                checkLoginStatus();
+            }
+        }
+
+        function updateProfileUI() {
+            document.getElementById('userName').innerText = state.profile.name || 'Siswa Indonesia';
+            document.getElementById('userClassBadge').innerText = state.profile.class || 'VII A';
+        }
+
+        function saveStateToLocalStorage() {
+            localStorage.setItem('sihebat_app_state', JSON.stringify(state));
+            updateOverallStats();
+        }
+
+        /* -------------------------------------------------------------
+         * 4. TRACKER & DAY LOGIC WITH ANTI-CHEAT
+         * ------------------------------------------------------------- */
+        function initDatePicker() {
+            const dateInput = document.getElementById('trackerDate');
+            const todayStr = new Date().toISOString().split('T')[0];
+            dateInput.max = todayStr; // ANTI-CHEAT: Lock future dates
+            dateInput.value = state.currentDate;
+        }
+
+        function getCurrentTimeString() {
+            const now = new Date();
+            const hrs = String(now.getHours()).padStart(2, '0');
+            const mins = String(now.getMinutes()).padStart(2, '0');
+            return `${hrs}:${mins}`;
+        }
+
+        function loadDayData() {
+            const selectedDate = document.getElementById('trackerDate').value;
+            state.currentDate = selectedDate;
+
+            const dayRecord = state.history[selectedDate] || { habits: {}, times: {}, photos: {}, notes: '', parentApproved: false };
+
+            HABITS_DEFINITION.forEach(h => {
+                const cb = document.getElementById(`chk_${h.id}`);
+                const card = document.getElementById(`card_${h.id}`);
+                const timeInput = document.getElementById(`time_${h.id}`);
+                const photoPreview = document.getElementById(`preview_${h.id}`);
+                const photoBox = document.getElementById(`photoBox_${h.id}`);
+
+                if (timeInput) {
+                    timeInput.value = dayRecord.times ? (dayRecord.times[h.id] || '') : '';
+                }
+
+                if (photoPreview) {
+                    const savedPhoto = dayRecord.photos ? dayRecord.photos[h.id] : null;
+                    if (savedPhoto) {
+                        photoPreview.src = savedPhoto;
+                        photoPreview.classList.remove('hidden');
+                        if (photoBox) photoBox.classList.add('border-emerald-400', 'bg-emerald-50/50');
+                    } else {
+                        photoPreview.src = '';
+                        photoPreview.classList.add('hidden');
+                        if (photoBox) photoBox.classList.remove('border-emerald-400', 'bg-emerald-50/50');
+                    }
+                }
+
+                if (cb && card) {
+                    const isChecked = !!(dayRecord.habits && dayRecord.habits[h.id]);
+                    cb.checked = isChecked;
+                    updateCardVisual(card, isChecked);
+                }
+            });
+
+            document.getElementById('dailyNotes').value = dayRecord.notes || '';
+            document.getElementById('parentApproval').checked = !!dayRecord.parentApproved;
+
+            updateDailyProgressBar();
+            updateOverallStats();
+        }
+
+        function toggleHabit(habitId) {
+            const cb = document.getElementById(`chk_${habitId}`);
+            const card = document.getElementById(`card_${habitId}`);
+            const habitDef = HABITS_DEFINITION.find(h => h.id === habitId);
+            const selectedDate = document.getElementById('trackerDate').value;
+
+            // Anti-Cheat: Require photo for photo-enabled habits before checking off
+            if (cb.checked && habitDef && habitDef.requirePhoto) {
+                const dayRecord = state.history[selectedDate] || { photos: {} };
+                const hasPhoto = dayRecord.photos && dayRecord.photos[habitId];
+                if (!hasPhoto) {
+                    cb.checked = false;
+                    showNotification(`Harap unggah foto kegiatan terlebih dahulu sebagai bukti otentik!`, 'error');
+                    return;
+                }
+            }
+
+            // Auto set current time if empty
+            const timeInput = document.getElementById(`time_${habitId}`);
+            if (cb.checked && timeInput && !timeInput.value) {
+                timeInput.value = getCurrentTimeString();
+            }
+
+            updateCardVisual(card, cb.checked);
+
+            if (cb.checked) {
+                playPopSound();
+            }
+
+            updateDailyProgressBar();
+        }
+
+        function updateCardVisual(cardElement, isChecked) {
+            if (isChecked) {
+                cardElement.classList.add('bg-emerald-50/80', 'border-emerald-400', 'shadow-sm');
+                cardElement.classList.remove('bg-white', 'border-slate-200/80');
+            } else {
+                cardElement.classList.remove('bg-emerald-50/80', 'border-emerald-400', 'shadow-sm');
+                cardElement.classList.add('bg-white', 'border-slate-200/80');
+            }
+        }
+
+        /* -------------------------------------------------------------
+         * 5. AUTOMATIC WATERMARK & PHOTO HANDLER (ANTI-CHEAT)
+         * ------------------------------------------------------------- */
+        function handlePhotoUpload(event, habitId) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const selectedDate = document.getElementById('trackerDate').value;
+            const habitDef = HABITS_DEFINITION.find(h => h.id === habitId);
+            const studentName = state.profile.name || 'Siswa';
+            const currentTime = getCurrentTimeString();
+
+            // Set time input automatically
+            const timeInput = document.getElementById(`time_${habitId}`);
+            if (timeInput) timeInput.value = currentTime;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    // Create Canvas for Watermark Overlay
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+
+                    // Resize canvas to reasonable size
+                    const maxDim = 800;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height && width > maxDim) {
+                        height = Math.round((height * maxDim) / width);
+                        width = maxDim;
+                    } else if (height > maxDim) {
+                        width = Math.round((width * maxDim) / height);
+                        height = maxDim;
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+
+                    // Draw image
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    // Draw Watermark Overlay Banner at Bottom
+                    const bannerHeight = Math.max(60, Math.round(height * 0.18));
+                    ctx.fillStyle = 'rgba(15, 23, 42, 0.85)'; // Slate-900 with opacity
+                    ctx.fillRect(0, height - bannerHeight, width, bannerHeight);
+
+                    // Watermark Accent Bar
+                    ctx.fillStyle = '#0284c7'; // Hebat Blue
+                    ctx.fillRect(0, height - bannerHeight, 8, bannerHeight);
+
+                    // Watermark Text Formatting
+                    ctx.fillStyle = '#ffffff';
+                    ctx.font = `bold ${Math.max(12, Math.round(bannerHeight * 0.22))}px "Plus Jakarta Sans", sans-serif`;
+                    ctx.fillText(`SIHEBAT - SMPN 3 SATAP PERMATA KECUBUNG`, 16, height - bannerHeight + Math.round(bannerHeight * 0.32));
+
+                    ctx.fillStyle = '#f59e0b'; // Amber
+                    ctx.font = `bold ${Math.max(11, Math.round(bannerHeight * 0.2))}px "Plus Jakarta Sans", sans-serif`;
+                    ctx.fillText(`Siswa: ${studentName} (${state.profile.class}) | Kebiasaan: ${habitDef ? habitDef.title : habitId}`, 16, height - bannerHeight + Math.round(bannerHeight * 0.62));
+
+                    ctx.fillStyle = '#cbd5e1';
+                    ctx.font = `${Math.max(10, Math.round(bannerHeight * 0.18))}px "Plus Jakarta Sans", sans-serif`;
+                    ctx.fillText(`Waktu Rekam: ${selectedDate} Pukul ${currentTime} WIB • VERIFIED`, 16, height - bannerHeight + Math.round(bannerHeight * 0.88));
+
+                    // Compress to JPEG Base64
+                    const watermarkedDataUrl = canvas.toDataURL('image/jpeg', 0.75);
+
+                    // Save to State
+                    if (!state.history[selectedDate]) {
+                        state.history[selectedDate] = { habits: {}, times: {}, photos: {}, notes: '', parentApproved: false };
+                    }
+                    if (!state.history[selectedDate].photos) state.history[selectedDate].photos = {};
+                    if (!state.history[selectedDate].times) state.history[selectedDate].times = {};
+
+                    state.history[selectedDate].photos[habitId] = watermarkedDataUrl;
+                    state.history[selectedDate].times[habitId] = currentTime;
+
+                    // UI Update Preview
+                    const photoPreview = document.getElementById(`preview_${habitId}`);
+                    const photoBox = document.getElementById(`photoBox_${habitId}`);
+                    if (photoPreview) {
+                        photoPreview.src = watermarkedDataUrl;
+                        photoPreview.classList.remove('hidden');
+                    }
+                    if (photoBox) photoBox.classList.add('border-emerald-400', 'bg-emerald-50/50');
+
+                    // Auto check habit once photo is provided
+                    const cb = document.getElementById(`chk_${habitId}`);
+                    if (cb && !cb.checked) {
+                        cb.checked = true;
+                        toggleHabit(habitId);
+                    }
+
+                    showNotification('Foto kegiatan berhasil distempel watermark & diverifikasi!');
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function updateDailyProgressBar() {
+            let completed = 0;
+            HABITS_DEFINITION.forEach(h => {
+                const cb = document.getElementById(`chk_${h.id}`);
+                if (cb && cb.checked) completed++;
+            });
+
+            const percent = Math.round((completed / HABITS_DEFINITION.length) * 100);
+            document.getElementById('dailyProgressPercent').innerText = `${percent}% (${completed}/7)`;
+            document.getElementById('dailyProgressBar').style.width = `${percent}%`;
+
+            if (percent === 100) {
+                triggerMotivationalConfetti();
+            }
+        }
+
+        function saveCurrentDayData() {
+            const selectedDate = document.getElementById('trackerDate').value;
+            const habitStatus = {};
+            const habitTimes = {};
+
+            HABITS_DEFINITION.forEach(h => {
+                const cb = document.getElementById(`chk_${h.id}`);
+                const timeInput = document.getElementById(`time_${h.id}`);
+
+                habitStatus[h.id] = cb ? cb.checked : false;
+                habitTimes[h.id] = timeInput ? timeInput.value : '';
+            });
+
+            const notes = document.getElementById('dailyNotes').value;
+            const parentApproved = document.getElementById('parentApproval').checked;
+
+            const existingPhotos = (state.history[selectedDate] && state.history[selectedDate].photos) ? state.history[selectedDate].photos : {};
+
+            state.history[selectedDate] = {
+                habits: habitStatus,
+                times: habitTimes,
+                photos: existingPhotos,
+                notes: notes,
+                parentApproved: parentApproved,
+                updatedAt: new Date().toISOString()
+            };
+
+            saveStateToLocalStorage();
+
+            if (state.gasUrl) {
+                syncDataToGAS(selectedDate, state.history[selectedDate]);
+            }
+
+            showNotification('Data pembiasaan berhasil disimpan!');
+        }
+
+        /* -------------------------------------------------------------
+         * 6. UI RENDER FUNCTIONS
+         * ------------------------------------------------------------- */
+        function renderHabitsGrid() {
+            const container = document.getElementById('habitsGrid');
+            container.innerHTML = HABITS_DEFINITION.map((h, idx) => `
+                <div id="card_${h.id}" class="habit-card bg-white p-4.5 rounded-2xl border border-slate-200/80 shadow-2xs space-y-3 flex flex-col justify-between cursor-pointer" onclick="clickHabitCard('${h.id}')">
+                    
+                    <!-- Card Top Header -->
+                    <div class="flex items-start justify-between gap-2">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-${h.color}-100 text-${h.color}-600 flex items-center justify-center text-lg font-bold shrink-0">
+                                <i class="fa-solid ${h.icon}"></i>
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-1.5">
+                                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider">Kebiasaan ${idx + 1}</span>
+                                    ${h.requirePhoto 
+                                        ? `<span class="bg-blue-100 text-blue-700 text-[9px] font-extrabold px-1.5 py-0.2 rounded"><i class="fa-solid fa-camera mr-0.5"></i> Wajib Foto</span>`
+                                        : `<span class="bg-amber-100 text-amber-800 text-[9px] font-extrabold px-1.5 py-0.2 rounded"><i class="fa-solid fa-clock mr-0.5"></i> Bebas Foto</span>`
+                                    }
+                                </div>
+                                <h4 class="font-bold text-slate-800 text-sm sm:text-base leading-tight mt-0.5">${h.title}</h4>
+                            </div>
+                        </div>
+                        <input type="checkbox" id="chk_${h.id}" class="w-5 h-5 rounded-md text-emerald-600 focus:ring-emerald-500 cursor-pointer shrink-0 mt-1" onclick="event.stopPropagation(); toggleHabit('${h.id}')">
+                    </div>
+
+                    <p class="text-xs text-slate-500 leading-relaxed">${h.subtitle}</p>
+
+                    <!-- Time Input Row -->
+                    <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200/60 flex items-center justify-between gap-2 text-xs" onclick="event.stopPropagation()">
+                        <span class="font-bold text-slate-600 flex items-center gap-1.5">
+                            <i class="fa-regular fa-clock text-blue-600"></i> Jam Kegiatan:
+                        </span>
+                        <input type="time" id="time_${h.id}" class="bg-white border border-slate-300 rounded-lg px-2 py-1 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <!-- Photo Upload / Proof Section (EXCLUDED for Bangun Pagi & Tidur Cepat) -->
+                    ${h.requirePhoto ? `
+                        <div id="photoBox_${h.id}" class="bg-slate-50 p-2.5 rounded-xl border border-dashed border-slate-300 space-y-2 transition" onclick="event.stopPropagation()">
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="font-bold text-slate-700 flex items-center gap-1">
+                                    <i class="fa-solid fa-image text-emerald-600"></i> Foto Bukti
+                                </span>
+                                <label class="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1 rounded-lg text-[11px] font-bold shadow-2xs transition flex items-center gap-1">
+                                    <i class="fa-solid fa-camera"></i> Unggah / Ambil
+                                    <input type="file" accept="image/*" capture="environment" class="hidden" onchange="handlePhotoUpload(event, '${h.id}')">
+                                </label>
+                            </div>
+                            <img id="preview_${h.id}" src="" class="hidden w-full h-32 object-cover rounded-lg border border-slate-200 shadow-2xs">
+                        </div>
+                    ` : `
+                        <div class="bg-amber-50/60 p-2 rounded-xl border border-amber-200 text-[11px] text-amber-800 flex items-center gap-2">
+                            <i class="fa-solid fa-circle-check text-amber-600"></i>
+                            <span>Menu ini tidak memerlukan unggahan foto kegiatan.</span>
+                        </div>
+                    `}
+
+                    <!-- Card Footer -->
+                    <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-[11px]">
+                        <span class="text-amber-600 font-bold"><i class="fa-solid fa-star text-amber-400 mr-1"></i>+${h.xp} XP</span>
+                        <button type="button" onclick="event.stopPropagation(); showHabitInfo('${h.id}')" class="text-slate-400 hover:text-slate-600 flex items-center gap-1 font-semibold">
+                            <i class="fa-solid fa-circle-info"></i> Info Tips
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function clickHabitCard(habitId) {
+            const cb = document.getElementById(`chk_${habitId}`);
+            if (cb) {
+                cb.checked = !cb.checked;
+                toggleHabit(habitId);
+            }
+        }
+
+        function renderGuideCards() {
+            const container = document.getElementById('guideCardsContainer');
+            container.innerHTML = HABITS_DEFINITION.map((h, idx) => `
+                <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs space-y-3 flex flex-col justify-between">
+                    <div class="space-y-2">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-${h.color}-100 text-${h.color}-600 flex items-center justify-center text-lg font-bold">
+                                <i class="fa-solid ${h.icon}"></i>
+                            </div>
+                            <div>
+                                <span class="text-[10px] font-black text-slate-400 uppercase">Kebiasaan #${idx + 1}</span>
+                                <h3 class="font-bold text-slate-800 text-base">${h.title}</h3>
+                            </div>
+                        </div>
+
+                        <p class="text-xs text-slate-600 leading-relaxed">${h.desc}</p>
+                    </div>
+
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 space-y-1">
+                        <p class="text-[11px] font-bold text-slate-700"><i class="fa-solid fa-lightbulb text-amber-500 mr-1"></i> Tips Praktis Hari Ini:</p>
+                        <ul class="text-[11px] text-slate-600 space-y-1 list-disc list-inside">
+                            ${h.tips.map(t => `<li>${t}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function showHabitInfo(habitId) {
+            switchTab('guide');
+        }
+
+        /* -------------------------------------------------------------
+         * 7. STATS, BADGES, & CHARTS LOGIC
+         * ------------------------------------------------------------- */
+        function calculateOverallStats() {
+            let totalXP = 0;
+            let totalCompleted = 0;
+            let daysRecorded = Object.keys(state.history).length;
+
+            Object.values(state.history).forEach(day => {
+                if (day.habits) {
+                    HABITS_DEFINITION.forEach(h => {
+                        if (day.habits[h.id]) {
+                            totalXP += h.xp;
+                            totalCompleted++;
+                        }
+                    });
+                }
+            });
+
+            let currentStreak = 0;
+            let bestStreak = 0;
+            const sortedDates = Object.keys(state.history).sort();
+            
+            let tempStreak = 0;
+            sortedDates.forEach((d) => {
+                const day = state.history[d];
+                let dayDone = 0;
+                if (day.habits) {
+                    HABITS_DEFINITION.forEach(h => { if (day.habits[h.id]) dayDone++; });
+                }
+                if (dayDone >= 4) {
+                    tempStreak++;
+                    if (tempStreak > bestStreak) bestStreak = tempStreak;
+                } else {
+                    tempStreak = 0;
+                }
+            });
+            currentStreak = tempStreak;
+
+            const level = Math.floor(totalXP / 200) + 1;
+
+            return { totalXP, totalCompleted, daysRecorded, currentStreak, bestStreak, level };
+        }
+
+        function updateOverallStats() {
+            const stats = calculateOverallStats();
+
+            document.getElementById('totalXP').innerText = stats.totalXP;
+            document.getElementById('streakCount').innerText = stats.currentStreak;
+            document.getElementById('userLevel').innerText = stats.level;
+
+            document.getElementById('statTotalCompleted').innerText = stats.totalCompleted;
+            document.getElementById('statBestStreak').innerText = stats.bestStreak;
+
+            const possibleTotal = (stats.daysRecorded || 1) * 7;
+            const avgRate = Math.min(100, Math.round((stats.totalCompleted / possibleTotal) * 100));
+            document.getElementById('statAvgRate').innerText = `${avgRate}%`;
+
+            renderBadges(stats);
+        }
+
+        function renderBadges(stats) {
+            const container = document.getElementById('badgesContainer');
+            let unlockedCount = 0;
+
+            container.innerHTML = BADGES_DEFINITION.map(b => {
+                const unlocked = stats.currentStreak >= b.reqStreak && stats.totalXP >= b.reqXP;
+                if (unlocked) unlockedCount++;
+
+                return `
+                    <div class="p-3.5 rounded-2xl border text-center space-y-2 ${unlocked ? 'bg-amber-50/50 border-amber-300 shadow-xs' : 'bg-slate-50 border-slate-200 opacity-50'}">
+                        <div class="w-12 h-12 mx-auto rounded-full ${unlocked ? 'bg-amber-400 text-white' : 'bg-slate-200 text-slate-400'} flex items-center justify-center text-xl shadow-inner">
+                            <i class="fa-solid ${b.icon}"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-xs text-slate-800">${b.title}</h4>
+                            <p class="text-[10px] text-slate-500 leading-tight mt-0.5">${b.desc}</p>
+                        </div>
+                        <span class="inline-block text-[9px] font-extrabold uppercase px-2 py-0.5 rounded-full ${unlocked ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-200 text-slate-600'}">
+                            ${unlocked ? 'Terbuka' : 'Terkunci'}
+                        </span>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('unlockedBadgesCount').innerText = `${unlockedCount} / ${BADGES_DEFINITION.length} Terbuka`;
+        }
+
+        function initCharts() {
+            const trendCtx = document.getElementById('trendChart').getContext('2d');
+            const dates = [];
+            const completionCounts = [];
+
+            for (let i = 6; i >= 0; i--) {
+                const d = new Date();
+                d.setDate(d.getDate() - i);
+                const dateStr = d.toISOString().split('T')[0];
+                dates.push(d.toLocaleDateString('id-ID', { weekday: 'short' }));
+
+                const rec = state.history[dateStr];
+                let count = 0;
+                if (rec && rec.habits) {
+                    HABITS_DEFINITION.forEach(h => { if (rec.habits[h.id]) count++; });
+                }
+                completionCounts.push(count);
+            }
+
+            if (trendChartInstance) trendChartInstance.destroy();
+            trendChartInstance = new Chart(trendCtx, {
+                type: 'line',
+                data: {
+                    labels: dates,
+                    datasets: [{
+                        label: 'Kebiasaan Terpenuhi',
+                        data: completionCounts,
+                        borderColor: '#0284c7',
+                        backgroundColor: 'rgba(2, 132, 199, 0.1)',
+                        fill: true,
+                        tension: 0.3,
+                        borderWidth: 3,
+                        pointBackgroundColor: '#0284c7'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { min: 0, max: 7, ticks: { stepSize: 1 } }
+                    }
+                }
+            });
+
+            const radarCtx = document.getElementById('radarChart').getContext('2d');
+            const habitTotals = HABITS_DEFINITION.map(h => {
+                let cnt = 0;
+                Object.values(state.history).forEach(day => {
+                    if (day.habits && day.habits[h.id]) cnt++;
+                });
+                return cnt;
+            });
+
+            if (radarChartInstance) radarChartInstance.destroy();
+            radarChartInstance = new Chart(radarCtx, {
+                type: 'radar',
+                data: {
+                    labels: HABITS_DEFINITION.map(h => h.title),
+                    datasets: [{
+                        label: 'Total Frekuensi',
+                        data: habitTotals,
+                        backgroundColor: 'rgba(139, 92, 246, 0.2)',
+                        borderColor: '#8b5cf6',
+                        pointBackgroundColor: '#8b5cf6',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: { beginAtZero: true, ticks: { display: false } }
+                    }
+                }
+            });
+        }
+
+        /* -------------------------------------------------------------
+         * 8. GOOGLE APPS SCRIPT CODE & SYNC
+         * ------------------------------------------------------------- */
+        const GAS_BACKEND_CODE = `/**
+ * BACKEND GOOGLE APPS SCRIPT - SIHEBAT (DENGAN INTEGRASI JAM & BUKTI FOTO)
+ * Salin seluruh kode ini ke Apps Script editor di Google Sheet Anda.
+ */
+
+function doGet(e) {
+  return ContentService.createTextOutput(JSON.stringify({ status: "success", message: "SIHEBAT API Ready" }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function doPost(e) {
+  try {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var sheet = ss.getSheetByName("Data_Pembiasaan");
+    
+    if (!sheet) {
+      sheet = ss.insertSheet("Data_Pembiasaan");
+      sheet.appendRow([
+        "Timestamp", "Tanggal", "Nama Siswa", "Bangun Pagi (Jam)", "Beribadah (Jam/Foto)", 
+        "Berolahraga (Jam/Foto)", "Makan Sehat (Jam/Foto)", "Gemar Belajar (Jam/Foto)", 
+        "Bermasyarakat (Jam/Foto)", "Tidur Cepat (Jam)", "Catatan Refleksi", "Persetujuan Orang Tua"
+      ]);
+    }
+    
+    var data = JSON.parse(e.postData.contents);
+    var habits = data.habits || {};
+    var times = data.times || {};
+    var photos = data.photos || {};
+    
+    sheet.appendRow([
+      new Date(),
+      data.date || "",
+      data.studentName || "Siswa",
+      habits.bangunPagi ? ("YA (" + (times.bangunPagi || "-") + ")") : "TIDAK",
+      habits.beribadah ? ("YA (" + (times.beribadah || "-") + " | " + (photos.beribadah ? "Ada Foto" : "-") + ")") : "TIDAK",
+      habits.berolahraga ? ("YA (" + (times.berolahraga || "-") + " | " + (photos.berolahraga ? "Ada Foto" : "-") + ")") : "TIDAK",
+      habits.makanSehat ? ("YA (" + (times.makanSehat || "-") + " | " + (photos.makanSehat ? "Ada Foto" : "-") + ")") : "TIDAK",
+      habits.gemarBelajar ? ("YA (" + (times.gemarBelajar || "-") + " | " + (photos.gemarBelajar ? "Ada Foto" : "-") + ")") : "TIDAK",
+      habits.bermasyarakat ? ("YA (" + (times.bermasyarakat || "-") + " | " + (photos.bermasyarakat ? "Ada Foto" : "-") + ")") : "TIDAK",
+      habits.tidurCepat ? ("YA (" + (times.tidurCepat || "-") + ")") : "TIDAK",
+      data.notes || "",
+      data.parentApproved ? "YA" : "TIDAK"
+    ]);
+    
+    return ContentService.createTextOutput(JSON.stringify({ status: "success", message: "Data tersimpan" }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (err) {
+    return ContentService.createTextOutput(JSON.stringify({ status: "error", message: err.toString() }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}`;
+
+        function updateGasCodeDisplay() {
+            document.getElementById('gasCodeDisplay').innerText = GAS_BACKEND_CODE;
+        }
+
+        function copyGasCode() {
+            const codeText = document.getElementById('gasCodeDisplay').innerText;
+            navigator.clipboard.writeText(codeText).then(() => {
+                showNotification('Kode Google Apps Script telah disalin!');
+            }).catch(() => {
+                const ta = document.createElement('textarea');
+                ta.value = codeText;
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                showNotification('Kode Google Apps Script telah disalin!');
+            });
+        }
+
+        function saveGasUrl() {
+            const url = document.getElementById('gasScriptUrl').value.trim();
+            state.gasUrl = url;
+            saveStateToLocalStorage();
+            checkAppSyncStatus();
+            showNotification('URL AppsScript berhasil diperbarui!');
+        }
+
+        function checkAppSyncStatus() {
+            const dot = document.getElementById('syncDot');
+            const txt = document.getElementById('syncText');
+            if (state.gasUrl && state.gasUrl.startsWith('http')) {
+                dot.className = "w-2 h-2 rounded-full bg-emerald-400 animate-pulse";
+                txt.innerText = "Terhubung GAS";
+            } else {
+                dot.className = "w-2 h-2 rounded-full bg-slate-300";
+                txt.innerText = "Lokal (Offline)";
+            }
+        }
+
+        function syncDataToGAS(dateStr, dayData) {
+            if (!state.gasUrl) return;
+
+            const payload = {
+                date: dateStr,
+                studentName: state.profile.name,
+                habits: dayData.habits,
+                times: dayData.times,
+                photos: dayData.photos,
+                notes: dayData.notes,
+                parentApproved: dayData.parentApproved
+            };
+
+            fetch(state.gasUrl, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).then(() => {
+                console.log('Data synced to GAS Web App endpoint');
+            }).catch(err => {
+                console.error('GAS Sync Error:', err);
+            });
+        }
+
+        /* -------------------------------------------------------------
+         * 9. MODAL & CERTIFICATE & AUDIO HELPERS
+         * ------------------------------------------------------------- */
+        function switchTab(tabId) {
+            const tabs = ['tracker', 'stats', 'guide', 'rewards', 'appsScript'];
+            tabs.forEach(t => {
+                const sec = document.getElementById(`section-${t}`);
+                const btn = document.getElementById(`nav-${t}`);
+                if (sec && btn) {
+                    if (t === tabId) {
+                        sec.classList.remove('hidden');
+                        btn.className = "nav-btn active flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap transition-all bg-red-50 text-red-600";
+                    } else {
+                        sec.classList.add('hidden');
+                        btn.className = "nav-btn flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-all text-slate-600 hover:bg-slate-100";
+                    }
+                }
+            });
+
+            if (tabId === 'stats') {
+                initCharts();
+            }
+        }
+
+        function openProfileModal() {
+            document.getElementById('inputStudentName').value = state.profile.name || '';
+            document.getElementById('inputStudentClass').value = state.profile.class || '';
+            document.getElementById('inputSchoolName').value = state.profile.school || '';
+            document.getElementById('profileModal').classList.remove('hidden');
+        }
+
+        function closeProfileModal() {
+            document.getElementById('profileModal').classList.add('hidden');
+        }
+
+        function saveProfileData() {
+            state.profile.name = document.getElementById('inputStudentName').value || 'Siswa Indonesia';
+            state.profile.class = document.getElementById('inputStudentClass').value || 'VII A';
+            state.profile.school = document.getElementById('inputSchoolName').value || 'SMP Negeri 3 Satap Permata Kecubung';
+
+            updateProfileUI();
+            saveStateToLocalStorage();
+            closeProfileModal();
+            showNotification('Profil siswa berhasil diperbarui!');
+        }
+
+        function generateCertificate() {
+            const stats = calculateOverallStats();
+            document.getElementById('certStudentName').innerText = state.profile.name || 'Siswa Indonesia';
+            document.getElementById('certStudentClassNisn').innerText = `Kelas ${state.profile.class || 'VII A'} • NISN: ${state.profile.nisn || '-'}`;
+            document.getElementById('certXP').innerText = `${stats.totalXP} XP`;
+            document.getElementById('certStreak').innerText = `${stats.currentStreak} Hari`;
+
+            let predicate = "Sangat Baik";
+            if (stats.totalXP > 1000) predicate = "Istimewa (Anak Hebat)";
+            else if (stats.totalXP > 500) predicate = "Sangat Baik";
+            else predicate = "Baik";
+
+            document.getElementById('certPredicate').innerText = predicate;
+            document.getElementById('certDate').innerText = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+
+            document.getElementById('certModal').classList.remove('hidden');
+        }
+
+        function closeCertModal() {
+            document.getElementById('certModal').classList.add('hidden');
+        }
+
+        function printCertificate() {
+            window.print();
+        }
+
+        function triggerMotivationalConfetti() {
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 80,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+            }
+        }
+
+        function playPopSound() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(587.33, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.1);
+                gain.gain.setValueAtTime(0.15, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.1);
+            } catch (e) {
+                // Ignore audio context autoplay restrictions
+            }
+        }
+
+        function showNotification(msg, type = 'success') {
+            const toast = document.createElement('div');
+            const bgClass = type === 'error' ? 'bg-rose-900 text-white' : 'bg-slate-900 text-white';
+            const iconClass = type === 'error' ? 'fa-circle-xmark text-rose-400' : 'fa-circle-check text-emerald-400';
+            
+            toast.className = `fixed bottom-5 right-5 ${bgClass} px-4 py-3 rounded-xl shadow-xl text-xs font-bold z-50 transition-all transform translate-y-0 flex items-center gap-2`;
+            toast.innerHTML = `<i class="fa-solid ${iconClass} text-base"></i> ${msg}`;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 2800);
+        }
+    </script>
+</body>
+</html>
